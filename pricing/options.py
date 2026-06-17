@@ -12,6 +12,15 @@ class Option:
         self.opt_type = opt_type
         return 
 
+    @property
+    def d1(self):
+        return (np.log(self.S / self.K) + (self.r + (self.sigma**2)/2)*self.T)/(self.sigma*self.T**0.5)
+
+    @property
+    def d2(self):
+        return self.d1 - self.sigma*(self.T**0.5)
+
+
     def price(self):
         if self.style == 'european':
             return self.price_european()
@@ -23,11 +32,11 @@ class Option:
 
     def price_european(self):
         # Black-Scholes for European Options
-        d1 = (np.log(self.S / self.K) + (self.r + (self.sigma**2)/2)*self.T)/(self.sigma*self.T**0.5)
-        d2 = d1 - self.sigma*(self.T**0.5)
+        # d1 = (np.log(self.S / self.K) + (self.r + (self.sigma**2)/2)*self.T)/(self.sigma*self.T**0.5)
+        # d2 = d1 - self.sigma*(self.T**0.5)
 
-        call_option = self.S * norm.cdf(d1) - self.K*np.exp(-self.r*self.T)*norm.cdf(d2)
-        put_option = self.K*np.exp(-self.r*self.T)*norm.cdf(-d2) - self.S*norm.cdf(-d1)
+        call_option = self.S * norm.cdf(self.d1) - self.K*np.exp(-self.r*self.T)*norm.cdf(self.d2)
+        put_option = self.K*np.exp(-self.r*self.T)*norm.cdf(-self.d2) - self.S*norm.cdf(-self.d1)
 
         if self.opt_type == 'call':
             return call_option
@@ -60,12 +69,9 @@ class Option:
         pass 
 
     def delta(self):
-        d1 = (np.log(self.S / self.K) + (self.r + (self.sigma**2)/2)*self.T)/(self.sigma*self.T**0.5)
-        d2 = d1 - self.sigma*(self.T**0.5)
-
         if self.opt_type == 'call':
-            return norm.cdf(d1)
+            return norm.cdf(self.d1)
         if self.opt_type == 'put':
-            return norm.cdf(d1) - 1
+            return norm.cdf(self.d1) - 1
         
 
