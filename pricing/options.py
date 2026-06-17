@@ -10,7 +10,6 @@ class Option:
         self.sigma = sigma
         self.style = style
         self.opt_type = opt_type
-        return 
 
     @property
     def d1(self):
@@ -99,4 +98,24 @@ class Option:
         else:
             raise ValueError("Valid types are 'call' and 'put'")
 
-        
+    @staticmethod
+    def implied_volatility(market_price, S, K, T, r, opt_type='call', style='european', tol=1e-6, max_iter=100):
+        sigma = np.sqrt(2 * np.pi / T) * (market_price / S)
+        sigma = max(sigma, 0.001)
+
+        for _ in range(max_iter):
+            temp_opt = Option(S, K, T, r, sigma, style=style, opt_type=opt_type)
+            price = temp_opt.price_european()
+            vega = temp_opt.vega()
+
+            if abs(price - market_price) < tol:
+                return sigma
+            
+            sigma = sigma - (price - market_price) / vega
+            sigma = np.clip(sigma, 0.001, 5.0)
+        return sigma 
+
+iv = Option.implied_volatility(market_price=10.5, S=100,K=100,T=1,r=0.05,opt_type='call')
+print(iv)
+opt = Option(S=100,K=100,T=1,r=0.05,sigma=iv)
+print(opt.price())
