@@ -63,7 +63,7 @@ class Option:
             payoffs = np.maximum(self.K - avg_prices, 0)
             return np.exp(-self.r * self.T) * payoffs.mean()
         else:
-            print("Valid types are: 'call' and 'put'")
+            raise ValueError("Valid types are: 'call' and 'put'")
 
     def price_american(self):
         pass 
@@ -71,7 +71,32 @@ class Option:
     def delta(self):
         if self.opt_type == 'call':
             return norm.cdf(self.d1)
-        if self.opt_type == 'put':
+        elif self.opt_type == 'put':
             return norm.cdf(self.d1) - 1
-        
+        else:
+            raise ValueError("Valid types are: 'call' and 'put'")
+    
+    def gamma(self):
+        return norm.cdf(self.d1)/(self.S * self.sigma * np.sqrt(self.T))
 
+    def vega(self):
+        return self.S * norm.pdf(self.d1) * np.sqrt(self.T)
+    
+    def theta(self):
+        base_theta = -(self.S * norm.pdf(self.d1) * self.sigma) / (2 * np.sqrt(self.T))
+        if self.opt_type == 'call':
+            return base_theta - (self.r * self.K * np.exp(-self.r * self.T) * norm.cdf(self.d2))
+        elif self.opt_type == 'put':
+            return base_theta + (self.r * self.K * np.exp(-self.r * self.T) * norm.cdf(-self.d2))
+        else:
+            raise ValueError("Valid types are 'call' and 'put'")
+        
+    def rho(self):
+        if self.opt_type == 'call':
+            return self.K * self.T * np.exp(-self.r*self.T) * norm.cdf(self.d2)
+        elif self.opt_type == 'put':
+            return -self.K * self.T * np.exp(-self.r * self.T) * norm.cdf(-self.d2)
+        else:
+            raise ValueError("Valid types are 'call' and 'put'")
+
+        
