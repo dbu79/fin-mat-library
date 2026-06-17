@@ -9,7 +9,7 @@ class Option:
         self.r = r
         self.sigma = sigma
         self.style = style
-        self.type = opt_type
+        self.opt_type = opt_type
         return 
 
     def price(self):
@@ -47,10 +47,10 @@ class Option:
         paths = self.S * np.exp(log_paths)
         avg_prices = paths.mean(axis=1)
         
-        if self.type == 'call':
+        if self.opt_type == 'call':
             payoffs = np.maximum(avg_prices - self.K, 0)
             return np.exp(-self.r * self.T) * payoffs.mean()
-        elif self.type == 'put':
+        elif self.opt_type == 'put':
             payoffs = np.maximum(self.K - avg_prices, 0)
             return np.exp(-self.r * self.T) * payoffs.mean()
         else:
@@ -58,4 +58,14 @@ class Option:
 
     def price_american(self):
         pass 
+
+    def delta(self):
+        d1 = (np.log(self.S / self.K) + (self.r + (self.sigma**2)/2)*self.T)/(self.sigma*self.T**0.5)
+        d2 = d1 - self.sigma*(self.T**0.5)
+
+        if self.opt_type == 'call':
+            return norm.cdf(d1)
+        if self.opt_type == 'put':
+            return norm.cdf(d1) - 1
+        
 
