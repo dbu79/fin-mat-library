@@ -114,6 +114,14 @@ class Option:
             if abs(price - market_price) < tol:
                 return sigma
             
-            sigma = sigma - (price - market_price) / max(0.0001, vega)
-            sigma = np.clip(sigma, 0.001, 5.0)
-        return sigma 
+            if abs(vega) < 1e-8:
+                return np.nan
+
+            sigma_new = sigma - (price - market_price) / vega
+            if not np.isfinite(sigma_new):
+                return np.nan
+            if sigma_new <= 0 or sigma_new > 5:
+                return np.nan
+            
+            sigma = sigma_new
+        return np.nan 
