@@ -100,6 +100,9 @@ class Option:
 
     @staticmethod
     def implied_volatility(market_price, S, K, T, r, opt_type='call', style='european', tol=1e-6, max_iter=100):
+        if T <= 0 or S <= 0 or K <= 0 or market_price <= 0:
+            return np.nan
+
         sigma = np.sqrt(2 * np.pi / T) * (market_price / S)
         sigma = max(sigma, 0.001)
 
@@ -111,11 +114,6 @@ class Option:
             if abs(price - market_price) < tol:
                 return sigma
             
-            sigma = sigma - (price - market_price) / vega
+            sigma = sigma - (price - market_price) / max(0.0001, vega)
             sigma = np.clip(sigma, 0.001, 5.0)
         return sigma 
-
-iv = Option.implied_volatility(market_price=10.5, S=100,K=100,T=1,r=0.05,opt_type='call')
-print(iv)
-opt = Option(S=100,K=100,T=1,r=0.05,sigma=iv)
-print(opt.price())
