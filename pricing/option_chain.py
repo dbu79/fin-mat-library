@@ -1,13 +1,19 @@
 import numpy as np 
 import pandas as pd
 from options import Option
-from scipy.stats import norm
 
 
 class OptionChain:
-    def __init__(self, data):
+    def __init__(self, data, strike_col, price_col):
+        # Rename inputted df so class methods can work
         self.data = data
-    
+        self.data = data.rename(
+            columns={
+                strike_col: "strike", 
+                price_col: "market_price", 
+                dte_col: "dte"
+            }
+        )
     def implied_volatilities(self, S, r, opt_type='call'):
         ivs = []
         
@@ -16,19 +22,11 @@ class OptionChain:
                 market_price=row['market_price'],
                 S=S,
                 K=row['strike'],
-                T=row['expiry']/365,
+                T=row['dte']/365,
                 r=r,
                 opt_type=opt_type
             )
             ivs.append(iv)
         self.data['iv'] = ivs
 
-chain = pd.DataFrame({
-    "strike": [90,95,100,105,110],
-    "market_price": [10,9,8,7,6],
-    'expiry': [30,30,30,30,30]
-})
-
-options = OptionChain(chain)
-options.implied_volatilities(100, 0.05)
-print(options.data)
+        return self.data
