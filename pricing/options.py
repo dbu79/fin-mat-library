@@ -76,7 +76,7 @@ class Option:
             raise ValueError("Valid types are: 'call' and 'put'")
     
     def gamma(self):
-        return norm.cdf(self.d1)/(self.S * self.sigma * np.sqrt(self.T))
+        return norm.pdf(self.d1)/(self.S * self.sigma * np.sqrt(self.T))
 
     def vega(self):
         return self.S * norm.pdf(self.d1) * np.sqrt(self.T)
