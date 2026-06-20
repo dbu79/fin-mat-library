@@ -118,10 +118,12 @@ class Option:
                 return np.nan
 
             sigma_new = sigma - (price - market_price) / vega
-            if not np.isfinite(sigma_new):
-                return np.nan
-            if sigma_new <= 0 or sigma_new > 5:
+            if not np.isfinite(sigma_new) or sigma_new <= 0 or sigma_new > 5:
                 return np.nan
             
             sigma = sigma_new
         return np.nan 
+    
+
+iv = Option.implied_volatility(3.7, 30, 28, 0.5, 0.05)
+print(iv)
