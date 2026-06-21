@@ -124,6 +124,3 @@ class Option:
             sigma = sigma_new
         return np.nan 
     
-
-iv = Option.implied_volatility(3.7, 30, 28, 0.5, 0.05)
-print(iv)
