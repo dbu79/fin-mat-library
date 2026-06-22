@@ -18,10 +18,11 @@ class MonteCarloPricer:
     def price(self):
         if self.opt_style == 'european':
             return self.price_european()
-        
+        elif self.opt_style == 'asian':
+            return self.price_asian()
 
     def price_european(self):
-        paths = self.gbm.sim_paths(self.T, self.T/self.n_steps, self.n_paths)
+        paths = self.gbm.sim_paths(T=self.T, dt=self.T/self.n_steps, n_paths=self.n_paths)
         S_t = paths[:, -1]
 
         if self.opt_type == 'call':
@@ -33,7 +34,7 @@ class MonteCarloPricer:
         return price
 
     def price_asian(self):
-        paths = self.gbm.sim_paths(self.T, self.T/self.n_steps, self.n_paths)
+        paths = self.gbm.sim_paths(T=self.T, dt=self.T/self.n_steps, n_paths=self.n_paths)
         path_avg = np.mean(paths, axis=1)
 
         if self.opt_type == 'call':
@@ -43,5 +44,3 @@ class MonteCarloPricer:
 
         price = np.exp(-self.r * self.T) * np.mean(payoffs)
         return price 
-    
-      
