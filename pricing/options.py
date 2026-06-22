@@ -76,15 +76,11 @@ class Option:
             raise ValueError("Valid types are: 'call' and 'put'")
     
     def gamma(self):
-        if self.opt_type == 'call':
-            return norm.pdf(self.d1)/(self.S * self.sigma * np.sqrt(self.T))
-        else:
-            print("Must be a call option") 
+        return norm.pdf(self.d1)/(self.S * self.sigma * np.sqrt(self.T))
+
     def vega(self):
-        if self.opt_type == 'call':
-            return self.S * norm.pdf(self.d1) * np.sqrt(self.T)
-        else:
-            print("Must be a call option")
+        return self.S * norm.pdf(self.d1) * np.sqrt(self.T)
+    
     def theta(self):
         base_theta = -(self.S * norm.pdf(self.d1) * self.sigma) / (2 * np.sqrt(self.T))
         if self.opt_type == 'call':
