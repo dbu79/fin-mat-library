@@ -1,20 +1,21 @@
 import numpy as np
 
 class GeometricBrownianMotion:
-    def sim_path(S, mu, sigma, T, dt, n):
-        paths = []
+    def __init__(self, S0, mu, sigma):
+        self.S0 = S0
+        self.mu = mu 
+        self.sigma = sigma
 
-        for i in range(n):
-            prices = [S]
-            time = 0 
+    def sim_paths(self, T, dt, n_paths):
+        n_steps = int(T / dt)
+        paths = np.zeros((n_paths, n_steps + 1))
+        paths[:, 0] = self.S0
 
-            while time + dt <= T:
-                prices.append(prices[-1]*np.exp((mu - 0.5*(sigma**2))*dt + sigma*np.random.normal(0, np.sqrt(dt))))
-                time += dt 
+        dW = np.random.normal(0, np.sqrt(dt), (n_paths, n_steps))
 
-            if T - time > 0:
-                prices.append(prices[-1]*np.exp((mu - 0.5*(sigma**2))*(T - time) + sigma*np.random.normal(0, np.sqrt(T-time))))
-
-        
-            paths.append(prices)
+        for i in range(1, n_steps + 1):
+            paths[:, i] = paths[:, i-1] * np.exp(
+                (self.mu - 0.5*self.sigma**2)*dt + self.sigma*dW[:, i-1]
+            )
         return paths
+
