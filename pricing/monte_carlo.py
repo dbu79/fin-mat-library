@@ -20,6 +20,8 @@ class MonteCarloPricer:
             return self.price_european()
         elif self.opt_style == 'asian':
             return self.price_asian()
+        else:
+            raise ValueError("Unsupported option style. Use 'european' or 'asian'.")
 
     def price_european(self):
         paths = self.gbm.sim_paths(T=self.T, dt=self.T/self.n_steps, n_paths=self.n_paths)
