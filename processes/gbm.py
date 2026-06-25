@@ -2,13 +2,15 @@ import numpy as np
 import matplotlib.pyplot as plt 
 
 class GeometricBrownianMotion:
-    def __init__(self, S0, mu, sigma):
+    def __init__(self, S0, mu, sigma, T, dt):
         self.S0 = S0
         self.mu = mu 
         self.sigma = sigma
+        self.T = T
+        self.dt = dt
 
     def sim_paths(self, T, dt, n_paths):
-        n_steps = int(T / dt)
+        n_steps = int(self.T / self.dt)
         paths = np.zeros((n_paths, n_steps + 1))
         paths[:, 0] = self.S0
 
@@ -20,26 +22,25 @@ class GeometricBrownianMotion:
             )
         return paths
 
-    def show_paths(self, T, dt, n_paths, title='GBM Simulated Paths', xlabel='Price', ylabel='Steps', average=True, largest=True, smallest=True):
+    def plot_paths(self, n_paths, title='GBM Simulated Paths', xlabel='Steps', ylabel='Price', average=True, largest=True, smallest=True):
         
-        paths = self.sim_paths(T, dt, n_paths)
+        paths = self.sim_paths(self.T, self.dt, n_paths)
         fig, ax = plt.subplots()
+        
         for path in paths:
-            ax.plot(path, color='#1f77b4', linewidth=0.75, alpha=0.3)
+            ax.plot(path, color='#1f77b4', linewidth=0.75, alpha=0.5)
         
         average_ = np.mean(paths, axis=0)
         largest_ = np.max(paths, axis=0)
         smallest_ = np.min(paths, axis=0)
         if average:
-            ax.plot(average_, color='purple', linewidth=0.8, alpha=0.5)
+            ax.plot(average_, color='purple', linewidth=0.8, alpha=0.4)
         if largest:
-            ax.plot(largest_, color='green', linewidth=0.8, alpha=0.3)
+            ax.plot(largest_, color='green', linewidth=0.8, alpha=0.4)
         if smallest:
-            ax.plot(smallest_, color="red", linewidth=0.8, alpha=0.3)
+            ax.plot(smallest_, color="red", linewidth=0.8, alpha=0.4)
 
-        ax.set_title(f"{title}")
-        ax.set_xlabel(f"{xlabel}")
-        ax.set_ylabel(f"{ylabel}")
+        ax.set_title(title)
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
         plt.show()
-
-
