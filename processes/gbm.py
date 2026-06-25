@@ -2,15 +2,14 @@ import numpy as np
 import matplotlib.pyplot as plt 
 
 class GeometricBrownianMotion:
-    def __init__(self, S0, mu, sigma, T, dt):
+    def __init__(self, S0, mu, sigma):
         self.S0 = S0
         self.mu = mu 
         self.sigma = sigma
-        self.T = T
-        self.dt = dt
+
 
     def sim_paths(self, T, dt, n_paths):
-        n_steps = int(self.T / self.dt)
+        n_steps = int(T / dt)
         paths = np.zeros((n_paths, n_steps + 1))
         paths[:, 0] = self.S0
 
@@ -22,9 +21,7 @@ class GeometricBrownianMotion:
             )
         return paths
 
-    def plot_paths(self, n_paths, title='GBM Simulated Paths', xlabel='Steps', ylabel='Price', average=True, largest=True, smallest=True):
-        
-        paths = self.sim_paths(self.T, self.dt, n_paths)
+    def plot_paths(self, paths, title='GBM Simulated Paths', xlabel='Steps', ylabel='Price', average=True, largest=True, smallest=True):
         fig, ax = plt.subplots()
         
         for path in paths:
