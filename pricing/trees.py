@@ -1,47 +1,36 @@
 import numpy as np
+from option import Option
 
 class BinomialTreePricer:
-    def __init__(self, S0, K, T, r, u, d, opt_style='american', opt_type='call', n_steps=100):
-        self.S0 = S0
-        self.K = K
-        self.T = T
-        self.r = r
-        self.u = u
-        self.d = d # d = 1/u
-        self.opt_style = opt_style
-        self.opt_type = opt_type
-        self.n_steps = n_steps
-    
-    def price(self):
-        if self.opt_style == 'american':
-            return self.price_american()
-        
-    def price_american(self):
-        dt = self.T / self.n_steps
-        q = (np.exp(self.r * dt) - self.d) / (self.u - self.d)
-        discount = np.exp(-self.r * dt)
+    @staticmethod
+    def price_american(option: Option, u, d, n_steps=100):
+        S0 = option.S
+        K = option.K
+        T = option.T
+        r = option.r
+        opt_type = option.opt_type
 
-        # Initialize asset prices at maturity
-        asset_prices = np.zeros(self.n_steps + 1)
-        for i in range(self.n_steps + 1):
-            asset_prices[i] = self.S0 * (self.u ** i) * (self.d ** (self.n_steps - i))
+        dt = T / n_steps
+        q = (np.exp(r * dt) - d) / (u - d)
+        discount = np.exp(-r * dt)
+
+        asset_prices = np.zeros(n_steps + 1)
+        for i in range(n_steps + 1):
+            asset_prices[i] = S0 * (u ** i) * (d ** (n_steps - i))
         
-        # Option payoffs at maturity
-        option_values = np.zeros(self.n_steps + 1)
-        for i in range(self.n_steps + 1):
-            if self.opt_type == 'call':
-                option_values[i] = np.maximum(asset_prices[i] - self.K, 0)
+        option_values = np.zeros(n_steps + 1)
+        for i in range(n_steps + 1):
+            if opt_type == 'call':
+                option_values[i] = np.maximum(asset_prices[i] - K, 0)
             else:
-                option_values[i] = np.maximum(self.K - asset_prices[i], 0)
+                option_values[i] = np.maximum(K - asset_prices[i], 0)
 
-        # Step back through the tree
-        for i in np.arange(self.n_steps - 1, -1, -1):
+        for i in np.arange(n_steps - 1, -1, -1):
             for j in range(i + 1):
                 option_values[j] = discount * (q * option_values[j + 1] + (1 - q) * option_values[j])
-                asset_price = self.S0 * (self.u ** j) * (self.d ** (i - j))
-                if self.opt_type == 'call':
-                    option_values[j] = np.maximum(option_values[j], asset_price - self.K)
+                asset_price = S0 * (u ** j) * (d ** (i - j))
+                if opt_type == 'call':
+                    option_values[j] = np.maximum(option_values[j], asset_price - K)
                 else:
-                    option_values[j] = np.maximum(option_values[j], self.K - asset_price)
+                    option_values[j] = np.maximum(option_values[j], K - asset_price)
         return option_values[0]
-    

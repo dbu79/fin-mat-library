@@ -1,69 +1,114 @@
+from option import Option
 import numpy as np
 from scipy.stats import norm
 
 class BlackScholesPricer:
-    def __init__(self, S, K, T, r, sigma, opt_type='call'):
-        self.S = S
-        self.K = K
-        self.T = T
-        self.r = r
-        self.sigma = sigma
-        self.opt_type = opt_type
+    @staticmethod
+    def price(option: Option):
+        S = option.S
+        K = option.K
+        T = option.T
+        r = option.r
+        sigma = option.sigma
+        opt_type = option.opt_type
 
-    @property
-    def d1(self):
-        return (np.log(self.S / self.K) + (self.r + (self.sigma**2)/2)*self.T)/(self.sigma*self.T**0.5)
+        d1 = (np.log(S / K) + (r + (sigma**2)/2)*T)/(sigma*np.sqrt(T))
+        d2 = d1 - sigma*np.sqrt(T)
 
-    @property
-    def d2(self):
-        return self.d1 - self.sigma*(self.T**0.5)
-
-
-    def price(self):
-        call_option = self.S * norm.cdf(self.d1) - self.K*np.exp(-self.r*self.T)*norm.cdf(self.d2)
-        put_option = self.K*np.exp(-self.r*self.T)*norm.cdf(-self.d2) - self.S*norm.cdf(-self.d1)
-
-        if self.opt_type == 'call':
-            return call_option
-        elif self.opt_type == 'put':
-            return put_option 
-        else:
-            print("Valid types are: 'call' and 'put'")
-
-
-    def delta(self):
-        if self.opt_type == 'call':
-            return norm.cdf(self.d1)
-        elif self.opt_type == 'put':
-            return norm.cdf(self.d1) - 1
+        if opt_type == 'call':
+            return S * norm.cdf(d1) - K * np.exp(-r*T) * norm.cdf(d2)
+        elif opt_type == 'put':
+            return K * np.exp(-r*T) * norm.cdf(-d2) - S * norm.cdf(-d1)
         else:
             raise ValueError("Valid types are: 'call' and 'put'")
     
-    def gamma(self):
-        return norm.pdf(self.d1)/(self.S * self.sigma * np.sqrt(self.T))
+    @staticmethod
+    def delta(option: Option):
+        S = option.S
+        K = option.K
+        T = option.T
+        r = option.r
+        sigma = option.sigma
+        opt_type = option.opt_type
 
-    def vega(self):
-        return self.S * norm.pdf(self.d1) * np.sqrt(self.T)
+        d1 = (np.log(S / K) + (r + (sigma**2)/2)*T)/(sigma*np.sqrt(T))
+
+        if opt_type == 'call':
+            return norm.cdf(d1)
+        elif opt_type == 'put':
+            return norm.cdf(d1) - 1
+        else:
+            raise ValueError("Valid types are: 'call' and 'put'")
     
-    def theta(self):
-        base_theta = -(self.S * norm.pdf(self.d1) * self.sigma) / (2 * np.sqrt(self.T))
-        if self.opt_type == 'call':
-            return base_theta - (self.r * self.K * np.exp(-self.r * self.T) * norm.cdf(self.d2))
-        elif self.opt_type == 'put':
-            return base_theta + (self.r * self.K * np.exp(-self.r * self.T) * norm.cdf(-self.d2))
+    @staticmethod
+    def gamma(option: Option):
+        S = option.S
+        K = option.K
+        T = option.T
+        r = option.r
+        sigma = option.sigma
+
+        d1 = (np.log(S / K) + (r + (sigma**2)/2)*T)/(sigma*np.sqrt(T))
+        return norm.pdf(d1)/(S * sigma * np.sqrt(T))
+
+    @staticmethod
+    def vega(option: Option):
+        S = option.S
+        K = option.K
+        T = option.T
+        r = option.r
+        sigma = option.sigma
+
+        d1 = (np.log(S / K) + (r + (sigma**2)/2)*T)/(sigma*np.sqrt(T))
+        return S * norm.pdf(d1) * np.sqrt(T)
+    
+    @staticmethod
+    def theta(option: Option):
+        S = option.S
+        K = option.K
+        T = option.T
+        r = option.r
+        sigma = option.sigma
+        opt_type = option.opt_type
+
+        d1 = (np.log(S / K) + (r + (sigma**2)/2)*T)/(sigma*np.sqrt(T))
+        d2 = d1 - sigma*np.sqrt(T)
+
+        base_theta = -(S * norm.pdf(d1) * sigma) / (2 * np.sqrt(T))
+        if opt_type == 'call':
+            return base_theta - (r * K * np.exp(-r * T) * norm.cdf(d2))
+        elif opt_type == 'put':
+            return base_theta + (r * K * np.exp(-r * T) * norm.cdf(-d2))
+        else:
+            raise ValueError("Valid types are 'call' and 'put'")
+    
+    @staticmethod
+    def rho(option: Option):
+        S = option.S
+        K = option.K
+        T = option.T
+        r = option.r
+        sigma = option.sigma
+        opt_type = option.opt_type
+
+        d1 = (np.log(S / K) + (r + (sigma**2)/2)*T)/(sigma*np.sqrt(T))
+        d2 = d1 - sigma*np.sqrt(T)
+
+        if opt_type == 'call':
+            return K * T * np.exp(-r*T) * norm.cdf(d2)
+        elif opt_type == 'put':
+            return -K * T * np.exp(-r * T) * norm.cdf(-d2)
         else:
             raise ValueError("Valid types are 'call' and 'put'")
         
-    def rho(self):
-        if self.opt_type == 'call':
-            return self.K * self.T * np.exp(-self.r*self.T) * norm.cdf(self.d2)
-        elif self.opt_type == 'put':
-            return -self.K * self.T * np.exp(-self.r * self.T) * norm.cdf(-self.d2)
-        else:
-            raise ValueError("Valid types are 'call' and 'put'")
-
     @staticmethod
-    def implied_volatility(market_price, S, K, T, r, opt_type='call', tol=1e-6, max_iter=100):
+    def implied_volatility(market_price, option: Option, tol=1e-6, max_iter=100):
+        S = option.S
+        K = option.K
+        T = option.T
+        r = option.r
+        opt_type = option.opt_type
+
         if T <= 0 or S <= 0 or K <= 0 or market_price <= 0:
             return np.nan
 
@@ -71,9 +116,9 @@ class BlackScholesPricer:
         sigma = max(sigma, 0.001)
 
         for _ in range(max_iter):
-            temp_opt = BlackScholesPricer(S, K, T, r, sigma, opt_type=opt_type)
-            price = temp_opt.price()
-            vega = temp_opt.vega()
+            temp_option = Option(S, K, T, r, sigma, opt_type=opt_type)
+            price = BlackScholesPricer.price(temp_option)
+            vega = BlackScholesPricer.vega(temp_option)
 
             if abs(price - market_price) < tol:
                 return sigma
@@ -86,5 +131,4 @@ class BlackScholesPricer:
                 return np.nan
             
             sigma = sigma_new
-        return np.nan 
-    
+        return np.nan
