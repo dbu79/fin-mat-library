@@ -1,5 +1,5 @@
 import numpy as np
-from option import Option
+from options.option import Option
 import matplotlib.pyplot as plt
 
 class HestonModel:

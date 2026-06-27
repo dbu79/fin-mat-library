@@ -1,6 +1,6 @@
 from processes.gbm import GeometricBrownianMotion
 import numpy as np
-from option import Option
+from options.option import Option
 
 class MonteCarloPricer: 
     @staticmethod
