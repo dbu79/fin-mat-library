@@ -2,13 +2,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class CIR:
-    def __init__(self, r0, a, b, sigma):
+    """Cox-Ingersoll-Ross (CIR) process."""
+    def __init__(self, r0: float, a: float, b: float, sigma: float):
         self.r0 = r0
         self.a = a
         self.b = b
         self.sigma = sigma
 
-    def sim_paths(self, T, dt, n_paths):
+    def sim_paths(self, T: float, dt: float, n_paths: int) -> np.ndarray:
         n_steps = int(T / dt)
         paths = np.zeros((n_paths, n_steps + 1))
         paths[:, 0] = self.r0

@@ -2,8 +2,9 @@ import numpy as np
 from options.option import Option
 
 class BinomialTreePricer:
+    """Binomial tree pricing for American options."""
     @staticmethod
-    def price_american(option: Option, u, d, n_steps=100):
+    def price_american(option: Option, u: float, d: float, n_steps: int = 100) -> float:
         S0 = option.S
         K = option.K
         T = option.T

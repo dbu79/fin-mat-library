@@ -3,8 +3,9 @@ import numpy as np
 from options.option import Option
 
 class MonteCarloPricer: 
+    """Monte Carlo pricing for European and Asian options."""
     @staticmethod
-    def price_european(option: Option, n_paths=10000, n_steps=252):
+    def price_european(option: Option, n_paths: int = 10000, n_steps: int = 252) -> float:
         gbm = GeometricBrownianMotion(S0=option.S, mu=option.r, sigma=option.sigma)
         paths = gbm.sim_paths(T=option.T, dt=option.T/n_steps, n_paths=n_paths)
         S_t = paths[:, -1]
@@ -18,7 +19,7 @@ class MonteCarloPricer:
         return price
     
     @staticmethod
-    def price_asian(option: Option, n_paths=10000, n_steps=252):
+    def price_asian(option: Option, n_paths: int = 10000, n_steps: int = 252) -> float:
         gbm = GeometricBrownianMotion(S0=option.S, mu=option.r, sigma=option.sigma)
         paths = gbm.sim_paths(T=option.T, dt=option.T/n_steps, n_paths=n_paths)
         path_avg = np.mean(paths, axis=1)

@@ -3,7 +3,7 @@ class Option:
 
     VALID_TYPES = ('call', 'put')
 
-    def __init__(self, S, K, T, r, sigma, opt_type='call'):
+    def __init__(self, S: float, K: float, T: float, r: float, sigma: float, opt_type: str = 'call'):
         if S <= 0:
             raise ValueError("Spot price must be greater than 0")
         if K <= 0:

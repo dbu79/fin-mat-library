@@ -2,13 +2,14 @@ import numpy as np
 import matplotlib.pyplot as plt 
 
 class GeometricBrownianMotion:
-    def __init__(self, S0, mu, sigma):
+    """Geometric Brownian Motion (GBM) process."""
+    def __init__(self, S0: float, mu: float, sigma: float):
         self.S0 = S0
         self.mu = mu 
         self.sigma = sigma
 
 
-    def sim_paths(self, T, dt, n_paths):
+    def sim_paths(self, T: float, dt: float, n_paths: int) -> np.ndarray:
         n_steps = int(T / dt)
         paths = np.zeros((n_paths, n_steps + 1))
         paths[:, 0] = self.S0

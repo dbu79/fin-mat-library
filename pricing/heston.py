@@ -3,8 +3,17 @@ from options.option import Option
 import matplotlib.pyplot as plt
 
 class HestonModel:
+    """Heston model for option pricing."""
     @staticmethod
-    def price(option: Option, kappa, theta, sigma, rho, v0, n_paths=10000, n_steps=252):
+    def price(
+        option: Option, 
+        kappa: float, 
+        theta: float, 
+        sigma: float, 
+        rho: float, v0: 
+        float, 
+        n_paths: int = 10000, 
+        n_steps: int = 252) -> float:
         S0 = option.S
         K = option.K
         T = option.T

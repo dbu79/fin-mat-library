@@ -2,7 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class JumpDiffusion:
-    def __init__(self, S0, mu, sigma, lambda_j, mu_j, sigma_j):
+    """Jump Diffusion process."""
+    def __init__(self, S0: float, mu: float, sigma: float, lambda_j: float, mu_j: float, sigma_j: float):
         self.S0 = S0
         self.mu = mu
         self.sigma = sigma
@@ -10,7 +11,7 @@ class JumpDiffusion:
         self.mu_j = mu_j
         self.sigma_j = sigma_j
 
-    def sim_paths(self, T, dt, n_paths):
+    def sim_paths(self, T: float, dt: float, n_paths: int) -> np.ndarray:
         n_steps = int(T / dt)
         paths = np.zeros((n_paths, n_steps + 1))
         paths[:, 0] = self.S0

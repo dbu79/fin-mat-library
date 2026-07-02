@@ -2,13 +2,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class VasicekModel:
-    def __init__(self, theta, mu, sigma, r0):
+    """Vasicek model for interest rate simulation."""
+    def __init__(self, theta: float, mu: float, sigma: float, r0: float):
         self.theta = theta
         self.mu = mu
         self.sigma = sigma
         self.r0 = r0
 
-    def sim_paths(self, T, dt, n_paths):
+    def sim_paths(self, T: float, dt: float, n_paths: int) -> np.ndarray:
         n_steps = int(T / dt)
         paths = np.zeros((n_paths, n_steps + 1))
         paths[:, 0] = self.r0

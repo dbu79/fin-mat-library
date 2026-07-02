@@ -2,12 +2,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class ArithmeticBrownianMotion:
-    def __init__(self, S0, mu, sigma):
+    """Arithmetic Brownian Motion (ABM) process."""
+    def __init__(self, S0: float, mu: float, sigma: float):
         self.S0 = S0
         self.mu = mu
         self.sigma = sigma
-    
-    def sim_paths(self, dt, T, n_paths):
+
+    def sim_paths(self, dt: float, T: float, n_paths: int) -> np.ndarray:
         n_steps = int(T / dt)
         paths = np.zeros((n_paths, n_steps + 1))
 

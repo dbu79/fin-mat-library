@@ -2,7 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class OrnsteinUhlenbeck:
-    def __init__(self, X0, theta, mu, sigma, T, dt):
+    """Ornstein-Uhlenbeck (OU) process."""
+    def __init__(self, X0: float, theta: float, mu: float, sigma: float, T: float, dt: float):
         self.X0 = X0
         self.theta = theta
         self.mu = mu 
@@ -10,7 +11,7 @@ class OrnsteinUhlenbeck:
         self.T = T
         self.dt = dt
 
-    def process(self, n_paths):
+    def process(self, n_paths: int) -> np.ndarray:
         n_steps = int(self.T / self.dt)
 
         paths = np.zeros((n_paths, n_steps + 1))

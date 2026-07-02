@@ -3,7 +3,7 @@ import numpy as np
 from scipy.stats import norm
 
 class BlackScholesPricer:
-    """Analytical Black-Scholes pricing and Greeks for European Options."""
+    """Black-Scholes pricing and Greeks for European Options."""
     @staticmethod
     def price(option: Option):
         S = option.S
@@ -24,7 +24,7 @@ class BlackScholesPricer:
             raise ValueError("Valid types are: 'call' and 'put'")
     
     @staticmethod
-    def delta(option: Option):
+    def delta(option: Option) -> float:
         S = option.S
         K = option.K
         T = option.T
@@ -42,7 +42,7 @@ class BlackScholesPricer:
             raise ValueError("Valid types are: 'call' and 'put'")
     
     @staticmethod
-    def gamma(option: Option):
+    def gamma(option: Option) -> float:
         S = option.S
         K = option.K
         T = option.T
@@ -53,8 +53,8 @@ class BlackScholesPricer:
         return norm.pdf(d1)/(S * sigma * np.sqrt(T))
 
     @staticmethod
-    def vega(option: Option):
-        """Per unit (1.00) change in sigma. Divide by 100 for per-1% convention."""
+    def vega(option: Option) -> float:
+        """Per 1% change in volatility"""
         S = option.S
         K = option.K
         T = option.T
@@ -62,11 +62,11 @@ class BlackScholesPricer:
         sigma = option.sigma
 
         d1 = (np.log(S / K) + (r + (sigma**2)/2)*T)/(sigma*np.sqrt(T))
-        return S * norm.pdf(d1) * np.sqrt(T)
+        return S * norm.pdf(d1) * np.sqrt(T) / 100
     
     @staticmethod
-    def theta(option: Option):
-        """Per year. Divide by 365 for per-day convention."""
+    def theta(option: Option) -> float:
+        """Per day"""
         S = option.S
         K = option.K
         T = option.T
@@ -79,15 +79,15 @@ class BlackScholesPricer:
 
         base_theta = -(S * norm.pdf(d1) * sigma) / (2 * np.sqrt(T))
         if opt_type == 'call':
-            return base_theta - (r * K * np.exp(-r * T) * norm.cdf(d2))
+            return (base_theta - (r * K * np.exp(-r * T) * norm.cdf(d2)))/365
         elif opt_type == 'put':
-            return base_theta + (r * K * np.exp(-r * T) * norm.cdf(-d2))
+            return (base_theta + (r * K * np.exp(-r * T) * norm.cdf(-d2)))/365
         else:
             raise ValueError("Valid types are 'call' and 'put'")
     
     @staticmethod
-    def rho(option: Option):
-        """Per unit (1.00) change in r. Divide by 100 for per-1% convention."""
+    def rho(option: Option) -> float:
+        """Per 1% change in interest rate"""
         S = option.S
         K = option.K
         T = option.T
@@ -99,9 +99,9 @@ class BlackScholesPricer:
         d2 = d1 - sigma*np.sqrt(T)
 
         if opt_type == 'call':
-            return K * T * np.exp(-r*T) * norm.cdf(d2)
+            return K * T * np.exp(-r*T) * norm.cdf(d2) / 100
         elif opt_type == 'put':
-            return -K * T * np.exp(-r * T) * norm.cdf(-d2)
+            return -K * T * np.exp(-r * T) * norm.cdf(-d2) / 100
         else:
             raise ValueError("Valid types are 'call' and 'put'")
         
