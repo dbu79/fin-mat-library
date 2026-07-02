@@ -1,45 +1,43 @@
 import numpy as np
 
-class PortfolioMetrics: 
+
+class PortfolioMetrics:
+    """Performance/risk metrics for a daily returns series."""
+
     def __init__(self, returns, risk_free_rate=0.0):
-        returns = np.asarray(returns, dtype=float)
-        self.returns = returns
-        self.risk_free_rate = risk_free_rate
+        self.returns = np.asarray(returns, dtype=float)
+        self.risk_free_rate = risk_free_rate  # annualized
 
     def annualized_return(self):
         return np.mean(self.returns) * 252
-    
-    def annualized_volatility(self):
-        return np.std(self.returns) * np.sqrt(252)
-        
-    def sharpe_ratio(self):
-        return (self.annualized_return() - self.risk_free_rate) / self.annualized_volatility() if self.annualized_volatility() != 0 else np.inf
-    
-    def sortino_ratio(self):
-        daily_rf = self.risk_free_rate / 252
-        excess = self.returns - daily_rf
-        downside = excess[excess < 0]
 
+    def annualized_volatility(self):
+        return np.std(self.returns, ddof=1) * np.sqrt(252)
+
+    def sharpe_ratio(self):
+        vol = self.annualized_volatility()
+        return (self.annualized_return() - self.risk_free_rate) / vol if vol != 0 else np.inf
+
+    def downside_deviation(self):
+        daily_rf = self.risk_free_rate / 252
+        downside = self.returns[self.returns < daily_rf]
         if len(downside) == 0:
+            return 0.0
+        return np.sqrt(np.mean((downside - daily_rf)**2)) * np.sqrt(252)
+
+    def sortino_ratio(self):
+        downside_vol = self.downside_deviation()
+        if downside_vol == 0:
             return np.inf
-        
-        downside_vol = np.sqrt(np.mean(downside**2)) * np.sqrt(252)
-        return (self.annualized_return() - self.risk_free_rate) / downside_vol if downside_vol != 0 else np.inf
-    
+        return (self.annualized_return() - self.risk_free_rate) / downside_vol
+
     def max_drawdown(self):
-        cumulative_returns = np.cumprod(1 + self.returns) 
+        """Assumes self.returns is chronologically ordered."""
+        cumulative_returns = np.cumprod(1 + self.returns)
         running_max = np.maximum.accumulate(cumulative_returns)
         drawdowns = (cumulative_returns - running_max) / running_max
         return np.min(drawdowns)
-    
+
     def calmar_ratio(self):
         max_dd = self.max_drawdown()
         return self.annualized_return() / abs(max_dd) if max_dd < 0 else np.inf
-
-    def downside_deviation(self):
-        downside = self.returns[self.returns < self.risk_free_rate]
-        return np.sqrt(np.mean(downside - self.risk_free_rate)**2) if len(downside) > 0 else 0
-
-
-
-    

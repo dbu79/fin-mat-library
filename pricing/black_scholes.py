@@ -3,6 +3,7 @@ import numpy as np
 from scipy.stats import norm
 
 class BlackScholesPricer:
+    """Analytical Black-Scholes pricing and Greeks for European Options."""
     @staticmethod
     def price(option: Option):
         S = option.S
@@ -53,6 +54,7 @@ class BlackScholesPricer:
 
     @staticmethod
     def vega(option: Option):
+        """Per unit (1.00) change in sigma. Divide by 100 for per-1% convention."""
         S = option.S
         K = option.K
         T = option.T
@@ -64,6 +66,7 @@ class BlackScholesPricer:
     
     @staticmethod
     def theta(option: Option):
+        """Per year. Divide by 365 for per-day convention."""
         S = option.S
         K = option.K
         T = option.T
@@ -84,6 +87,7 @@ class BlackScholesPricer:
     
     @staticmethod
     def rho(option: Option):
+        """Per unit (1.00) change in r. Divide by 100 for per-1% convention."""
         S = option.S
         K = option.K
         T = option.T
@@ -101,34 +105,3 @@ class BlackScholesPricer:
         else:
             raise ValueError("Valid types are 'call' and 'put'")
         
-    @staticmethod
-    def implied_volatility(market_price, option: Option, tol=1e-6, max_iter=100):
-        S = option.S
-        K = option.K
-        T = option.T
-        r = option.r
-        opt_type = option.opt_type
-
-        if T <= 0 or S <= 0 or K <= 0 or market_price <= 0:
-            return np.nan
-
-        sigma = np.sqrt(2 * np.pi / T) * (market_price / S)
-        sigma = max(sigma, 0.001)
-
-        for _ in range(max_iter):
-            temp_option = Option(S, K, T, r, sigma, opt_type=opt_type)
-            price = BlackScholesPricer.price(temp_option)
-            vega = BlackScholesPricer.vega(temp_option)
-
-            if abs(price - market_price) < tol:
-                return sigma
-            
-            if abs(vega) < 1e-8:
-                return np.nan
-
-            sigma_new = sigma - (price - market_price) / vega
-            if not np.isfinite(sigma_new) or sigma_new <= 0 or sigma_new > 5:
-                return np.nan
-            
-            sigma = sigma_new
-        return np.nan
