@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: finmat
-Version: 0.1.0
+Version: 0.1.1
 Summary: A financial math library for options pricing, stochastic processes, and fixed income analytics
 Author-email: Daniel Butler <danielbutler245@gmail.com>
 License-Expression: MIT
@@ -71,9 +71,7 @@ testing.ipynb              # Example usage and validation notebook
 ## Installation
 
 ```bash
-git clone <repo-url>
-cd <repo-name>
-pip install -r requirements.txt
+pip install finmat
 ```
 
 ## Usage
