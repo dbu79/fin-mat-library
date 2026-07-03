@@ -1,8 +1,7 @@
 import numpy as np
 from options.option import Option
-import matplotlib.pyplot as plt
 
-class HestonModel:
+class HestonPricer:
     """Heston model for option pricing."""
     @staticmethod
     def price(

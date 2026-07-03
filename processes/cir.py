@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-class CIR:
+class CoxIngersollRoss:
     """Cox-Ingersoll-Ross (CIR) process."""
     def __init__(self, r0: float, a: float, b: float, sigma: float):
         self.r0 = r0
