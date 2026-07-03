@@ -1,5 +1,1 @@
-fixed_income
-options
-portfolio
-pricing
-processes
+finmat

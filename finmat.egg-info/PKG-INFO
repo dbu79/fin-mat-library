@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: finmat
-Version: 0.1.1
+Version: 0.2.0
 Summary: A financial math library for options pricing, stochastic processes, and fixed income analytics
 Author-email: Daniel Butler <danielbutler245@gmail.com>
 License-Expression: MIT

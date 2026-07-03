@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "finmat"
-version = "0.1.2"
+version = "0.2.0"
 description = "A financial math library for options pricing, stochastic processes, and fixed income analytics"
 readme = "README.md"
 requires-python = ">=3.8"
