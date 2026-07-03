@@ -1,5 +1,5 @@
-from fixed_income import simple_interest, compound_interest, future_value, present_value, annuity_pv, annuity_fv, bond_price, convexity
-from options import ImpliedVolatility, Option
-from portfolio import PortfolioMetrics
-from pricing import BlackScholesPricer, BinomialTreePricer, MonteCarloPricer, HestonPricer
-from processes import ArithmeticBrownianMotion, GeometricBrownianMotion, OrnsteinUhlenbeck, CoxIngersollRoss, JumpDiffusion, VasicekModel
+from finmat import simple_interest, compound_interest, future_value, present_value, annuity_pv, annuity_fv, bond_price, convexity
+from finmat import ImpliedVolatility, Option
+from finmat import PortfolioMetrics
+from finmat import BlackScholesPricer, BinomialTreePricer, MonteCarloPricer, HestonPricer
+from finmat import ArithmeticBrownianMotion, GeometricBrownianMotion, OrnsteinUhlenbeck, CoxIngersollRoss, JumpDiffusion, VasicekModel
