@@ -1,3 +1,16 @@
+Metadata-Version: 2.4
+Name: finmat
+Version: 0.1.0
+Summary: A financial math library for options pricing, stochastic processes, and fixed income analytics
+Author-email: Daniel Butler <danielbutler245@gmail.com>
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/dbu79/fin-mat-library
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: numpy
+Requires-Dist: scipy
+Requires-Dist: matplotlib
+
 # Financial Math Library
 
 A Python library for pricing derivatives, simulating stochastic processes, and analyzing fixed income instruments.
@@ -58,7 +71,9 @@ testing.ipynb              # Example usage and validation notebook
 ## Installation
 
 ```bash
-pip install finmat
+git clone <repo-url>
+cd <repo-name>
+pip install -r requirements.txt
 ```
 
 ## Usage
