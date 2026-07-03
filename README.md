@@ -78,9 +78,8 @@ See `testing.ipynb` for example workflows, including:
 - Python 3.8+
 - NumPy
 - SciPy
-- pandas
 - matplotlib (for notebook visualizations)
 
 ## License
 
-Add your license here.
+This project is licensed under the MIT License - see the LICENSE file for details.
