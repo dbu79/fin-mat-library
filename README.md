@@ -58,9 +58,7 @@ testing.ipynb              # Example usage and validation notebook
 ## Installation
 
 ```bash
-git clone <repo-url>
-cd <repo-name>
-pip install -r requirements.txt
+pip install finmat
 ```
 
 ## Usage
