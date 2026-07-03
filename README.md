@@ -1,4 +1,4 @@
-# Quant Finance Toolkit
+# Financial Math Library
 
 A Python library for pricing derivatives, simulating stochastic processes, and analyzing fixed income instruments.
 
